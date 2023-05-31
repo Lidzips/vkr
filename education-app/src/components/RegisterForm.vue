@@ -1,21 +1,25 @@
 <template>
+  <div class="logout">
+    <router-link to="/login">Войти</router-link>
+  </div>
   <div class="register">
     <h2>Регистрация</h2>
-    <form @submit.prevent="login">
+    <form @submit.prevent="register">
       <div>
         <label for="login">Логин:</label>
-        <input type="text" id="login" v-model="loginData.username" />
+        <input type="text" id="login" v-model="registerData.username" />
       </div>
       <div>
-        <label for="password">Пароль:</label>
-        <input type="password" id="password" v-model="loginData.password" />
+        <label for="password1">Пароль:</label>
+        <input type="password" id="password1" v-model="registerData.password1" />
       </div>
       <div>
-        <label for="password">Повторите пароль:</label>
-        <input type="password" id="password" v-model="loginData.password" />
+        <label for="password2">Повторите пароль:</label>
+        <input type="password" id="password2" v-model="registerData.password2" />
       </div>
       <button type="submit">Зарегистрироваться</button>
       <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
+      <p v-if="successMessage" class="success-message">{{ successMessage }}</p>
     </form>
   </div>
 </template>
@@ -26,30 +30,51 @@ import axios from 'axios';
 export default {
   data() {
     return {
-      loginData: {
+      registerData: {
         username: '',
-        password: '',
+        password1: '',
+        password2: '',
       },
       errorMessage: '',
+      successMessage: '',
     };
   },
   methods: {
-    login() {
-      axios.get(`http://localhost:8081/user/id?login=${this.loginData.username}`)
+    register() {
+      axios.get(`http://localhost:8081/user/id?login=${this.registerData.username}`)
         .then(response => {
           // Обработка ответа от сервера
           const userData = response.data;
-          if (userData.password === this.loginData.password) {
-            this.$emit('userLoggedIn', userData); // Отправляем событие с данными пользователя
-            this.$router.push('/home'); // Переход на домашнюю страницу
-          } else {
-            this.errorMessage = 'Неправильный логин или пароль'; // Установка сообщения об ошибке
+          if (userData !== null) {
+            this.errorMessage = 'Учетная запись с именем ' + userData.login + ' уже существует.' // Установка сообщения об ошибке
           }
         })
         .catch(error => {
-          this.errorMessage = 'Ошибка при выполнении запроса к серверу'; // Установка сообщения об ошибке
-          console.error(error);
+          if (error.message == 'Request failed with status code 404') {
+            if (this.registerData.password1 == this.registerData.password2) {
+              axios.post(`http://localhost:8081/user`,
+                {
+                  login: this.registerData.username,
+                  password: this.registerData.password1
+                }
+                )
+                .then(response => {
+                  // Обработка ответа от сервера
+                  const userData = response.data;
+                  this.successMessage = 'Учетная запись с именем ' + userData.login + ' успешно создана.'; // Установка сообщения об успехе
+                })
+                .catch(error => {
+                  this.errorMessage = 'Ошибка при выполнении запроса к серверу'; // Установка сообщения об ошибке
+                  console.error(error);
+                });
+            }
+          } else {
+            this.errorMessage = 'Ошибка при выполнении запроса к серверу'; // Установка сообщения об ошибке
+            console.error(error);
+          }
+          
         });
+      
     },
   },
 };
@@ -58,6 +83,10 @@ export default {
 <style scoped>
 .error-message {
   color: red;
+}
+
+.success-message {
+  color: green;
 }
 
 .register {
