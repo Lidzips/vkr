@@ -5,6 +5,7 @@ import HomePage from '../components/HomePage.vue';
 import TaskDetails from '../components/TaskDetails.vue';
 import AdminPage from '../components/AdminPage.vue';
 import AdminDetails from '../components/AdminDetails.vue';
+import AdminCreate from '../components/AdminCreate.vue';
 
 const routes = [
   {
@@ -30,6 +31,11 @@ const routes = [
     path: '/admin',
     name: 'Admin',
     component: AdminPage,
+  },
+  {
+    path: '/adminCreate',
+    name: 'AdminCreate',
+    component: AdminCreate,
   },
   {
     path: '/task/:id',

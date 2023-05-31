@@ -22,6 +22,14 @@
             <p>Задание {{ task.id }}</p>
           </div>
         </div>
+        
+      </div>
+      <div class="add-task">
+        <router-link to="/adminCreate">
+          <button class="add-task-button">
+            Добавить задачу
+          </button>
+        </router-link>
       </div>
     </div>
   </template>
@@ -117,5 +125,23 @@
   .topic-heading {
     text-align: center;
     margin-top: 20px;
+  }
+
+  .add-task {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+
+  .add-task-button {
+    padding: 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    font-size: 16px;
   }
   </style>
