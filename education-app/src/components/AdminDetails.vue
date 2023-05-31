@@ -133,8 +133,8 @@ export default {
             prompt: this.prompt,
             topic: this.topic,
             out1: this.out1,
-            out2: this.out1,
-            out3: this.out1
+            out2: this.out2,
+            out3: this.out3
           })
             .then(response => {
               console.log(response.data)
