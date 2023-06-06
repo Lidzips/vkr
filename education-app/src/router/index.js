@@ -41,7 +41,7 @@ const routes = [
     path: '/task/:id',
     name: 'TaskDetails',
     component: TaskDetails,
-    props: true, // Включение передачи параметров в виде пропсов
+    props: true,
   },
   {
     path: '/taskAdmin/:id',
