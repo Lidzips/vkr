@@ -24,24 +24,6 @@ public class UserController {
         return new UserResource(entity);
     }
 
-//    @GetMapping("/pw")
-//    public ResponseEntity<String> getPassword(@RequestParam("login") String login) {
-//        String result = userRepository.selectPasswordByLogin(login);
-//        if (result == null) {
-//            return ResponseEntity.notFound().build();
-//        }
-//        return ResponseEntity.ok(result);
-//    }
-//
-//    @GetMapping("/id")
-//    public ResponseEntity<Integer> getId(@RequestParam("login") String login) {
-//        Integer result = userRepository.selectIdByLogin(login);
-//        if (result == null) {
-//            return ResponseEntity.notFound().build();
-//        }
-//        return ResponseEntity.ok(result);
-//    }
-
     @GetMapping("/id")
     public ResponseEntity<User> getByLogin(@RequestParam("login") String login) {
         User result = userRepository.selectByLogin(login);
