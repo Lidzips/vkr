@@ -1,8 +1,4 @@
 <template>
-  <div class="logout">
-    <router-link to="/login">Выйти</router-link>
-  </div>
-  
   <div class="form-container" v-if="task">
     <div class="task-navigation">
       <router-link to="/admin">К списку задач</router-link>

@@ -1,13 +1,14 @@
 <template>
-  <div class="logout">
-    <router-link to="/login">Выйти</router-link>
-  </div>
   <div class="task-details">
     <div class="task-navigation">
       <router-link to="/home">К списку задач</router-link>
     </div>
     <div class="task-info" v-if="task">
       <h3>Задача {{ task.id }}</h3>
+      <div class="task-difficulty">
+        <label for="stars">Сложность:</label>
+        <span id="stars" class="star" v-for="index in 5" :key="index" :class="{ 'star-filled': index <= task.complexity }">&#9733;</span>
+      </div>
       <p>{{ task.taskText }}</p>
       <button @click="toggleCollapse">Подсказка</button>
       <div v-if="collapsed">
@@ -158,11 +159,6 @@
   </script>
   
   <style>
-  .logout{
-    display: flex;
-    justify-content: flex-end;
-  }
-
   .task-details {
     margin-top: 20px;
   }
@@ -223,5 +219,20 @@
   .buttons {
     display: flex;
     justify-content: flex-start;
+  }
+
+  .task-difficulty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .star {
+    font-size: 20px;
+    color: #ccc;
+  }
+
+  .star-filled {
+    color: gold;
   }
   </style>

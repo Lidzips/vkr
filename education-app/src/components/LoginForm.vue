@@ -70,6 +70,7 @@
     padding: 20px;
     border: 1px solid #ccc;
     border-radius: 4px;
+    margin-top: 2%;
   }
   
   h2 {

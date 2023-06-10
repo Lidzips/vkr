@@ -1,37 +1,36 @@
 <template>
-  <div class="logout">
-    <router-link to="/login">Выйти</router-link>
-  </div>
-    <div class="home">
-      <h2>Администраторская страница</h2>
-      <p>Добро пожаловать, {{ userData.login }}!</p>
-    </div>
-    <div class="spacer">
-    </div>
-    <div class="home">
-      <div v-for="topic in topics" :key="topic">
-        <h3 class="topic-heading">{{ topic }}</h3>
-        <div class="task-grid">
-          <div
-            class="task-item"
-            v-for="task in getTasksByTopic(topic)"
-            :key="task.id"
-            :class="{}"
-            @click="handleTaskClick(task)"
-          >
-            <p>Задание {{ task.id }}</p>
+    <div class="home-page">
+      <div class="home">
+        <h2>Администраторская страница</h2>
+      </div>
+      <div class="spacer">
+      </div>
+      <div class="home">
+        <div v-for="topic in topics" :key="topic">
+          <h3 class="topic-heading">{{ topic }}</h3>
+          <div class="task-grid">
+            <div
+              class="task-item"
+              v-for="task in getTasksByTopic(topic)"
+              :key="task.id"
+              :class="{}"
+              @click="handleTaskClick(task)"
+            >
+              <p>Задание {{ task.id }}</p>
+            </div>
           </div>
+          
         </div>
-        
-      </div>
-      <div class="add-task">
-        <router-link to="/adminCreate">
-          <button class="add-task-button">
-            Добавить задачу
-          </button>
-        </router-link>
+        <div class="add-task">
+          <router-link to="/adminCreate">
+            <button class="add-task-button">
+              Добавить задачу
+            </button>
+          </router-link>
+        </div>
       </div>
     </div>
+    
   </template>
   
   <script>
@@ -87,11 +86,6 @@
   </script>
   
   <style>
-  .logout{
-    display: flex;
-    justify-content: flex-end;
-  }
-  
   .home {
     max-width: 75%;
     margin: 0 auto;

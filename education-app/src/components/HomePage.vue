@@ -1,30 +1,29 @@
 <template>
-  <div class="logout">
-    <router-link to="/login">Выйти</router-link>
-  </div>
-    <div class="home">
-      <h2>Домашняя страница</h2>
-      <p>Добро пожаловать, {{ userData.login }}!</p>
-    </div>
-    <div class="spacer">
-    </div>
-    <div class="home">
-      <div v-for="topic in topics" :key="topic">
-        <h3 class="topic-heading">{{ topic }}</h3>
-        <div class="task-grid">
-          <div
-            class="task-item"
-            v-for="task in getTasksByTopic(topic)"
-            :key="task.id"
-            :class="{ 'locked': !isTaskAvailable(task.id)}"
-            @click="handleTaskClick(task)"
-          >
-            <span v-if="!isTaskAvailable(task.id)" class="lock-icon">🔒</span>
-            <p>Задание {{ task.id }}</p>
+    <div class="home-page">
+      <div class="home">
+        <h2>Домашняя страница</h2>
+      </div>
+      <div class="spacer"></div>
+      <div class="home">
+        <div v-for="topic in topics" :key="topic">
+          <h3 class="topic-heading">{{ topic }}</h3>
+          <div class="task-grid">
+            <div
+              class="task-item"
+              v-for="task in getTasksByTopic(topic)"
+              :key="task.id"
+              :class="{ 'locked': !isTaskAvailable(task.id)}"
+              @click="handleTaskClick(task)"
+            >
+              <span v-if="isTaskCompleted(task.id)" class="completed-icon">✓</span>
+              <span v-else-if="!isTaskAvailable(task.id)" class="lock-icon">🔒</span>
+              <p>Задание {{ task.id }}</p>
+            </div>
           </div>
         </div>
       </div>
     </div>
+    
   </template>
   
   <script>
@@ -85,6 +84,11 @@
         const progress = this.userProgress.find(item => item.taskId === taskId);
         return progress && progress.available;
       },
+      isTaskCompleted(taskId) {
+        // Проверяем, выполнено ли задание пользователем
+        const progress = this.userProgress.find((item) => item.taskId === taskId);
+        return progress && progress.completed;
+      },
       handleTaskClick(task) {
         // Обработка клика по задаче
         if (this.isTaskAvailable(task.id)) {
@@ -103,11 +107,10 @@
   </script>
   
   <style>
-  .logout{
-    display: flex;
-    justify-content: flex-end;
+  .home-page {
+    margin-top: 2%;
   }
-  
+
   .home {
     max-width: 75%;
     margin: 0 auto;
@@ -143,11 +146,19 @@
     cursor: not-allowed;
   }
 
-  .lock-icon {
+  .lock-icon,
+  .completed-icon {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+  }
+
+  .completed-icon {
+    color: green;
+    font-weight: bolder;
+    font-size: 24px;
+    text-shadow: 2px 2px 4px #00000062;
   }
 
   .topic-heading {

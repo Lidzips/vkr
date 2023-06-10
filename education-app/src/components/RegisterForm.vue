@@ -1,7 +1,4 @@
 <template>
-  <div class="logout">
-    <router-link to="/login">Войти</router-link>
-  </div>
   <div class="register">
     <h2>Регистрация</h2>
     <form @submit.prevent="register">
@@ -95,6 +92,7 @@ export default {
   padding: 20px;
   border: 1px solid #ccc;
   border-radius: 4px;
+  margin-top: 2%;
 }
 
 h2 {
