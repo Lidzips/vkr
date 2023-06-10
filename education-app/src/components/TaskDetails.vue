@@ -9,6 +9,11 @@
         <label for="stars">Сложность:</label>
         <span id="stars" class="star" v-for="index in 5" :key="index" :class="{ 'star-filled': index <= task.complexity }">&#9733;</span>
       </div>
+      <div class="task-status" v-if="progress">
+        <label for="status">Статус:</label>
+        <span id="status" class="status-completed" v-if="progress.completed"> Выполнено</span>
+        <span id="status" class="status-not-completed" v-else> Не выполнено</span>
+      </div>
       <p>{{ task.taskText }}</p>
       <button @click="toggleCollapse">Подсказка</button>
       <div v-if="collapsed">
@@ -64,6 +69,7 @@
 
     mounted() {
         this.fetchTask();
+        this.fetchTaskProgress();
     },
 
     methods: {
@@ -74,6 +80,19 @@
           .then(response => {
             this.task = response.data;
             this.code = this.task.file;
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      },
+
+      fetchTaskProgress() {
+        // Выполняем HTTP-запрос для получения прогресса по id
+        const userId = this.userData.id;
+        const taskId = this.id;
+        axios.get(`http://localhost:8081/progress/usertask?user_id=${userId}&task_id=${taskId}`)
+          .then(response => {
+            this.progress = response.data;
           })
           .catch(error => {
             console.error(error);
@@ -110,37 +129,26 @@
           const out2 = this.task.out2
           const out3 = this.task.out3
           if (codeLines[0] === out1 && codeLines[1] === out2 && codeLines[2] === out3) {
-            // Если все ответы совпали, то отправим запрос на текущий прогресс этой задачи
-            const userId = this.userData.id;
-            const taskId = this.id;
-            axios.get(`http://localhost:8081/progress/usertask?user_id=${userId}&task_id=${taskId}`)
-              .then(response => {
-                // Обработка ответа от сервера
-                this.progress = response.data;
-                // Затем сверим, не была ли эта задача уже решена ранее, чтобы не делать лишние записи в бд
-                if (!this.progress.completed) {
-                  // Если не была решена ранее, то отправим put запрос с целью изменить информацию
-                  axios.put('http://localhost:8081/progress/' + this.progress.id, { completed: true })
-                    .then(response => {
-                      console.log(response.data)
-                      this.showResult = true;
-                      this.resultText = "Задача успешно выполнена";
-                      this.resultColor = "green"
-                    })
-                    .catch(error => {
-                      // Обработка ошибки
-                      console.error(error);
-                    });
-                } else {
-                  // Если задача уже была решена ранее, просто выведем сообщение об успешном выполнении
+            // Если при компиляции получен ожидаемый результат..
+            if (!this.progress.completed) {
+              // Если не была решена ранее, то отправим put запрос с целью изменить информацию
+              axios.put('http://localhost:8081/progress/' + this.progress.id, { completed: true })
+                .then(response => {
+                  this.progress = response.data;
                   this.showResult = true;
                   this.resultText = "Задача успешно выполнена";
                   this.resultColor = "green"
-                }
-              })
-              .catch(error => {
-                console.error(error);
-              });  
+                })
+                .catch(error => {
+                  // Обработка ошибки
+                  console.error(error);
+                });
+            } else {
+              // Если задача уже была решена ранее, просто выведем сообщение об успешном выполнении
+              this.showResult = true;
+              this.resultText = "Задача успешно выполнена";
+              this.resultColor = "green"
+            }
           } else {
             // Код не соответствует ожидаемым выходным значениям
             this.showResult = true;
