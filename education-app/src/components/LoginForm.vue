@@ -23,6 +23,7 @@
   import axios from 'axios';
 
   export default {
+    props: ['userData'],
     data() {
       return {
         loginData: {
@@ -31,6 +32,9 @@
         },
         errorMessage: '',
       };
+    },
+    created() {
+      this.$emit('clearUserData'); // Сброс данных пользователя при переходе на страницу логина
     },
     methods: {
       login() {
@@ -43,7 +47,7 @@
               if (userData.isAdmin) {
                 this.$router.push('/admin'); // Переход на админскую домашнюю страницу
               } else {
-                this.$router.push('/home'); // Переход на домашнюю страницу
+                this.$router.push('/tasks'); // Переход на домашнюю страницу
               }
               
             } else {

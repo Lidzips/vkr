@@ -1,14 +1,21 @@
 <template>
   <div id="app">
     <header>
-      <div v-if="userData" class="user-info">
+      <div class="header-left">
+        <i class="fas fa-home" @click="goToHome"></i>
+      </div>
+      <div id="greetings" v-if="userData" class="header-center">
         Привет, {{ userData.login }}!
       </div>
-      <router-link v-if="isLoginPage" to="/register">Регистрация</router-link>
-      <router-link v-else-if="isRegisterPage" to="/login">Войти</router-link>
-      <router-link v-else to="/login">Выйти</router-link>
+      <div class="header-right">
+        <p v-if="isLoginPage" class="auth-link" @click="goTo">Регистрация</p>
+        <p v-else-if="isRegisterPage" class="auth-link" @click="goTo">Войти</p>
+        <p v-else-if="isHomePage" class="auth-link" @click="goTo">{{ userData ? 'Выйти' : 'Войти' }}</p>
+        <p v-else class="auth-link" @click="goTo">Выйти</p>
+      </div>
+      
     </header>
-    <router-view @userLoggedIn="handleUserLoggedIn"> </router-view>
+    <router-view @userLoggedIn="handleUserLoggedIn" @clearUserData="handleClearUserData"> </router-view>
     
   </div>
 </template>
@@ -28,10 +35,42 @@ export default {
     isRegisterPage() {
       return this.$route.name === 'Register';
     },
+    isHomePage() {
+      return this.$route.name === 'Home';
+    },
   },
+  
   methods: {
     handleUserLoggedIn(userData) {
       this.userData = userData; // Присваиваем данные пользователя свойству корневого компонента
+    },
+
+    handleClearUserData() {
+      this.userData = null;
+      const element = document.getElementById('greetings');
+      if (element) {
+        element.textContent = '';
+      }
+    },
+
+    goToHome() {
+      this.$router.push('/home');
+    },
+
+    goTo() {
+      switch (this.$route.name) {
+        case 'Login':
+          this.$router.push('/register');
+          break;
+        case 'Register':
+          this.$router.push('/login');
+          break;
+        case 'Home':
+          this.$router.push('/login');
+          break;
+        default:
+          this.$router.push('/login');
+      }
     },
   },
 };
@@ -49,21 +88,43 @@ export default {
 
 header {
   display: flex;
-  justify-content: flex-end;
-  padding: 10px;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 2px;
   border-bottom: #b4b8b9fb;
   border-bottom-style: groove;
   border-width: 2px;
 }
 
-header a {
+.header-left {
+  font-size: 24px;
+  flex: 1;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.header-center {
+  font-weight: bold;
+  margin-right: 2%;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.header-right {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.fa-home{
+  cursor: pointer;
+}
+
+.auth-link {
   margin-left: 10px;
   text-decoration: none;
   color: #5e9bd8;
-}
-
-.user-info {
-  font-weight: bold;
-  margin-right: 2%;
+  cursor: pointer;
 }
 </style>

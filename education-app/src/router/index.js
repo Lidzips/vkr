@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import LoginForm from '../components/LoginForm.vue';
 import RegisterForm from '../components/RegisterForm.vue';
 import HomePage from '../components/HomePage.vue';
+import TasksPage from '../components/TasksPage.vue';
 import TaskDetails from '../components/TaskDetails.vue';
 import AdminPage from '../components/AdminPage.vue';
 import AdminDetails from '../components/AdminDetails.vue';
@@ -10,7 +11,7 @@ import AdminCreate from '../components/AdminCreate.vue';
 const routes = [
   {
     path: '/',
-    redirect: '/login',
+    redirect: '/home',
   },
   {
     path: '/login',
@@ -31,6 +32,11 @@ const routes = [
     path: '/admin',
     name: 'Admin',
     component: AdminPage,
+  },
+  {
+    path: '/tasks',
+    name: 'Tasks',
+    component: TasksPage,
   },
   {
     path: '/adminCreate',
