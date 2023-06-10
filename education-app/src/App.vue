@@ -51,7 +51,7 @@ header {
   display: flex;
   justify-content: flex-end;
   padding: 10px;
-  border-bottom: #6ec9f7fb;
+  border-bottom: #b4b8b9fb;
   border-bottom-style: groove;
   border-width: 2px;
 }
@@ -59,7 +59,7 @@ header {
 header a {
   margin-left: 10px;
   text-decoration: none;
-  color: #0b7beb;
+  color: #5e9bd8;
 }
 
 .user-info {
