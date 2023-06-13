@@ -32,7 +32,7 @@
 
     <div class="inputs">
       <label for="prompt">Подсказка:</label>
-      <input type="text" id="prompt" v-model="prompt" />
+      <textarea class="codePaste" id="prompt" v-model="prompt"></textarea>
     </div>
 
     <div class="inputs">
