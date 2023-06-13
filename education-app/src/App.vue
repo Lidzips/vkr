@@ -111,7 +111,7 @@ export default {
             // Успешный выход пользователя
             // Очистить данные о пользователе и токене в клиентском приложении
             this.userData = null;
-            localStorage.removeItem('accessToken');
+            localStorage.removeItem('session');
           })
           .catch(error => {
             // Обработка ошибки при выходе пользователя

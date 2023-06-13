@@ -220,6 +220,9 @@
     padding: 10px;
     margin-top: 10px;
     box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.2);
+    white-space: pre-line;
+    white-space: pre;
+    text-align: left !important;
   }
 
   .code-working {
