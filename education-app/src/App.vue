@@ -42,24 +42,26 @@ export default {
   },
 
   created() {
-    // Вызов метода logout() при каждом переходе на маршрут '/login'
+    
     this.$router.beforeEach((to, from, next) => {
+      const sessionData = localStorage.getItem('session');
+      if (sessionData && to.name !== 'Login' && to.name !== 'Register') {
+        const { accessToken } = JSON.parse(sessionData);
+
+        // Восстановление сессии
+        this.restoreSession(accessToken);
+      }
+      // Вызов метода logout() при каждом переходе на маршрут '/login'
       if (to.name === 'Login') {
         this.logout();
       }
+
       next();
     });
   },
 
   beforeMount() {
-    // Проверка наличия сохраненной сессии
-    const sessionData = localStorage.getItem('session');
-    if (sessionData) {
-      const { accessToken } = JSON.parse(sessionData);
-
-      // Восстановление сессии
-      this.restoreSession(accessToken);
-    }
+    
   },
   
   methods: {

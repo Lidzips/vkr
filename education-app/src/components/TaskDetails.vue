@@ -15,8 +15,8 @@
         <span id="status" class="status-not-completed" v-else> Не выполнено</span>
       </div>
       <p>{{ task.taskText }}</p>
-      <button @click="toggleCollapse">Подсказка</button>
-      <div v-if="collapsed">
+      <button class="button hint-button" @click="toggleCollapse">Подсказка</button>
+      <div v-if="collapsed" class="collapsed-hint">
         {{ task.prompt }}
       </div>
     </div>
@@ -25,7 +25,7 @@
     </div>
     <div class="code-working">
       <div class="code-editor" v-if="task">
-        <textarea class="code-editor-ta" v-model="code" placeholder="Введите ваш код на C++"></textarea>
+        <textarea id="editor" ref="codeEditorTextarea" class="code-editor-ta" v-model="code" placeholder="Введите ваш код на C++"></textarea>
       </div>
       <div class="compiler-output">
         <textarea class="compiler-output-ta" v-model="output" readonly></textarea>
@@ -44,6 +44,10 @@
   
   <script>
   import axios from 'axios';
+  import CodeMirror from 'codemirror';
+  import 'codemirror/lib/codemirror.css';
+  import 'codemirror/theme/eclipse.css';
+  import 'codemirror/mode/clike/clike';
 
   export default {
     props: ['id'], // Получение параметра id из URL
@@ -64,12 +68,14 @@
         showResult: false,
         resultText: "",
         resultColor: "",
+        codeEditorInitialized: false,
       };
     },
 
     beforeMount() {
         this.fetchTask();
     },
+
     watch: {
       '$root.userData': {
         immediate: true,
@@ -80,6 +86,25 @@
         },
       },
     },
+
+    updated() {
+      if (!this.codeEditorInitialized) {
+        const textarea = document.getElementById('editor');
+        if (!textarea) return;
+
+        CodeMirror.fromTextArea(textarea, {
+          lineNumbers: true,
+          mode: 'text/x-c++src',
+          theme: 'eclipse',
+        }).on('change', (editor) => {
+          this.code = editor.getValue();
+        });
+
+        this.codeEditorInitialized = true;
+      }
+      
+    },
+
     methods: {
       fetchTask() {
         // Выполняем HTTP-запрос для получения задачи по id
@@ -178,11 +203,23 @@
   .task-details {
     margin-top: 20px;
   }
+
+  .CodeMirror {
+    text-align: left !important;
+  }
   
   .task-info {
     background-color: #f2f2f2;
     padding: 10px;
     border: 1px solid #ccc;
+  }
+
+  .collapsed-hint {
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-top: 10px;
+    box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.2);
   }
 
   .code-working {
@@ -220,6 +257,11 @@
     border-radius: 5px;
     cursor: pointer;
     margin-right: 10px;
+  }
+
+  .hint-button {
+    background-color: #999;
+    color: #fff;
   }
 
   .reset-button {
