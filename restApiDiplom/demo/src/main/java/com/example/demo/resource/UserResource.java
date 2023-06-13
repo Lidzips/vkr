@@ -7,6 +7,9 @@ public class UserResource extends BaseResource{
     private String login;
     private String password;
     private Boolean isAdmin;
+    private String accessToken;
+
+    private Integer points;
 
     public UserResource() {}
 
@@ -15,6 +18,8 @@ public class UserResource extends BaseResource{
         this.login = user.getLogin();
         this.password = user.getPassword();
         this.isAdmin = user.getIsAdmin();
+        this.accessToken = user.getAccessToken();
+        this.points = user.getPoints();
     }
 
     public Integer getId() {
@@ -49,12 +54,30 @@ public class UserResource extends BaseResource{
         isAdmin = isAdmin;
     }
 
+    public String getAccessToken() {
+        return accessToken;
+    }
+
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+    }
+
+    public Integer getPoints() {
+        return points;
+    }
+
+    public void setPoints(Integer points) {
+        this.points = points;
+    }
+
     public User toEntity() {
         return new User(
                 this.id,
                 this.login,
                 this.password,
-                this.isAdmin
+                this.isAdmin,
+                this.accessToken,
+                this.points
         );
     }
 }

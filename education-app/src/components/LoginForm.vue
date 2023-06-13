@@ -38,24 +38,42 @@
     },
     methods: {
       login() {
-        axios.get(`http://localhost:8081/user/id?login=${this.loginData.username}`)
+        // Создаем объект с данными аутентификации
+        const authData = {
+          login: this.loginData.username,
+          password: this.loginData.password
+        };
+
+        // Отправляем запрос на сервер
+        axios.post('http://localhost:8081/user/login', authData)
           .then(response => {
-            // Обработка ответа от сервера
-            const userData = response.data;
-            if (userData.password === this.loginData.password) {
-              this.$emit('userLoggedIn', userData); // Отправляем событие с данными пользователя
-              if (userData.isAdmin) {
-                this.$router.push('/admin'); // Переход на админскую домашнюю страницу
-              } else {
-                this.$router.push('/tasks'); // Переход на домашнюю страницу
-              }
-              
+            // Обработка успешного ответа от сервера
+            const accessToken = response.data.accessToken;
+            const { id, login, isAdmin, points } = response.data;
+            const userData = {
+              id,
+              login,
+              isAdmin,
+              points
+            };
+            const sessionData = {accessToken};
+            
+            // Сохраняем токен доступа в localStorage
+            localStorage.setItem('session', JSON.stringify(sessionData));
+
+            // Отправляем событие с данными пользователя
+            this.$emit('userLoggedIn', userData);
+
+            // Переход на соответствующую страницу
+            if (isAdmin) {
+              this.$router.push('/admin');
             } else {
-              this.errorMessage = 'Неправильный логин или пароль'; // Установка сообщения об ошибке
+              this.$router.push('/tasks');
             }
           })
           .catch(error => {
-            this.errorMessage = 'Ошибка при выполнении запроса к серверу'; // Установка сообщения об ошибке
+            // Обработка ошибки при аутентификации
+            this.errorMessage = 'Ошибка при выполнении запроса к серверу';
             console.error(error);
           });
       },

@@ -25,9 +25,9 @@ public class ProgressController {
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     ProgressResource[] getAll() {
-        Progress[] alphabets;
-        alphabets = progressRepository.select();
-        return Arrays.stream(alphabets)
+        Progress[] progresses;
+        progresses = progressRepository.select();
+        return Arrays.stream(progresses)
                 .map(entity -> {
                     return new ProgressResource(entity);
                 })
@@ -36,9 +36,9 @@ public class ProgressController {
 
     @RequestMapping(value = "/by_user", method = RequestMethod.GET)
     ProgressResource[] getAllByUser(@RequestParam("user_id") Integer userId) {
-        Progress[] alphabets;
-        alphabets = progressRepository.selectByUserId(userId);
-        return Arrays.stream(alphabets)
+        Progress[] progresses;
+        progresses = progressRepository.selectByUserId(userId);
+        return Arrays.stream(progresses)
                 .map(entity -> {
                     return new ProgressResource(entity);
                 })

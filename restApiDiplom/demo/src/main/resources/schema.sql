@@ -2,7 +2,9 @@
 	"id" SERIAL PRIMARY KEY,
 	"login" TEXT DEFAULT '' NOT NULL,
 	"password" TEXT DEFAULT '' NOT NULL,
-	"is_admin" BOOLEAN DEFAULT false
+	"is_admin" BOOLEAN DEFAULT false,
+	"access_token" VARCHAR(255),
+	"points" INT DEFAULT 0
 );
 
 CREATE TABLE "task"(

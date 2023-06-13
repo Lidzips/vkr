@@ -21,6 +21,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 export default {
   name: 'App',
   data() {
@@ -39,8 +40,55 @@ export default {
       return this.$route.name === 'Home';
     },
   },
+
+  created() {
+    // Вызов метода logout() при каждом переходе на маршрут '/login'
+    this.$router.beforeEach((to, from, next) => {
+      if (to.name === 'Login') {
+        this.logout();
+      }
+      next();
+    });
+  },
+
+  beforeMount() {
+    // Проверка наличия сохраненной сессии
+    const sessionData = localStorage.getItem('session');
+    if (sessionData) {
+      const { accessToken } = JSON.parse(sessionData);
+
+      // Восстановление сессии
+      this.restoreSession(accessToken);
+    }
+  },
   
   methods: {
+    async restoreSession(token) {
+      try {
+        console.log(token);
+        // Отправка запроса на восстановление сессии
+        const response = await axios.post('http://localhost:8081/user/restore-session', null, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        // Проверка статуса ответа
+        if (response.status === 200) {
+          // Восстановление сессии
+          const { id, login, isAdmin, points } = response.data;
+          const userData = {
+            id,
+            login,
+            isAdmin,
+            points
+          };
+          this.handleUserLoggedIn(userData);
+        }
+      } catch (error) {
+        // Обработка ошибки при восстановлении сессии
+        console.error('Ошибка восстановления сессии:', error);
+      }
+    },
+
     handleUserLoggedIn(userData) {
       this.userData = userData; // Присваиваем данные пользователя свойству корневого компонента
     },
@@ -50,6 +98,23 @@ export default {
       const element = document.getElementById('greetings');
       if (element) {
         element.textContent = '';
+      }
+    },
+
+    logout() {
+      if (this.userData) {
+        axios.post('http://localhost:8081/user/logout', { login: this.userData.login, accessToken: this.userData.accessToken })
+          .then(response => {
+            console.log(response.data);
+            // Успешный выход пользователя
+            // Очистить данные о пользователе и токене в клиентском приложении
+            this.userData = null;
+            localStorage.removeItem('accessToken');
+          })
+          .catch(error => {
+            // Обработка ошибки при выходе пользователя
+            console.error(error);
+          });
       }
     },
 

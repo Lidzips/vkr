@@ -2,6 +2,9 @@
     <div class="tasks-page">
       <div class="tasks">
         <h2>Страница заданий</h2>
+        <div class="progress-points">
+          Текущее количество ваших очков прогресса: {{ userData.points }} / {{ totalProgressPoints }}
+        </div>
       </div>
       <div class="spacer"></div>
       <div class="tasks">
@@ -39,6 +42,9 @@
         const uniqueTopics = new Set(this.tasks.map((task) => task.topic));
         return Array.from(uniqueTopics);
       },
+      totalProgressPoints() {
+        return this.tasks.reduce((total, task) => total + task.complexity, 0);
+      },
     },
     data() {
       return {
@@ -47,9 +53,18 @@
         currentTopic: '', // Текущий выбранный топик
       };
     },
-    mounted() {
+    beforeMount() {
       this.fetchTasks(); // Вызываем метод для загрузки задач при монтировании компонента
-      this.fetchUserProgress();
+    },
+    watch: {
+      '$root.userData': {
+        immediate: true,
+        handler(userData) {
+          if (userData) {
+            this.fetchUserProgress();
+          }
+        },
+      },
     },
     methods: {
       fetchTasks() {
@@ -69,7 +84,7 @@
       },
       fetchUserProgress() {
         // Выполняем HTTP-запрос для получения прогресса пользователя
-        const userId = this.userData.id; // Получаем ID текущего пользователя
+        const userId = this.$root.userData.id; // Получаем ID текущего пользователя
         axios
           .get(`http://localhost:8081/progress/by_user?user_id=${userId}`)
           .then(response => {
@@ -117,6 +132,11 @@
     padding: 20px;
     border: 1px solid #ccc;
     border-radius: 4px;
+  }
+
+  .progress-points {
+    text-align: center;
+    margin-bottom: 10px;
   }
   
   .spacer {

@@ -1,7 +1,7 @@
 <template>
   <div class="task-details">
     <div class="task-navigation">
-      <router-link to="/home">К списку задач</router-link>
+      <router-link to="/tasks">К списку задач</router-link>
     </div>
     <div class="task-info" v-if="task">
       <h3>Задача {{ task.id }}</h3>
@@ -67,11 +67,19 @@
       };
     },
 
-    mounted() {
+    beforeMount() {
         this.fetchTask();
-        this.fetchTaskProgress();
     },
-
+    watch: {
+      '$root.userData': {
+        immediate: true,
+        handler(userData) {
+          if (userData) {
+            this.fetchTaskProgress();
+          }
+        },
+      },
+    },
     methods: {
       fetchTask() {
         // Выполняем HTTP-запрос для получения задачи по id
